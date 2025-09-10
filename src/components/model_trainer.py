@@ -36,13 +36,13 @@ class ModelTrainer:
                 test_array[:,-1],
             )
             models={
-                "Random Forest": RandomForestRegressor(),
-                "Decision Tree": DecisionTreeRegressor(),
-                "Gradient Boosting": GradientBoostingRegressor(),
+                "Random Forest": RandomForestRegressor(random_state=42),
+                "Decision Tree": DecisionTreeRegressor(random_state=42),
+                "Gradient Boosting": GradientBoostingRegressor(random_state=42),
                 "Linear Regression": LinearRegression(),
-                "XGBRegressor": XGBRegressor(),
-                "CatBoosting Regressor": CatBoostRegressor(verbose=False),
-                "AdaBoost Regressor": AdaBoostRegressor(),
+                "XGBRegressor": XGBRegressor(random_state=42,verbosity=0),
+                "CatBoosting Regressor": CatBoostRegressor(random_state=42,verbose=False),
+                "AdaBoost Regressor": AdaBoostRegressor(random_state=42),
             }
 
             params={
@@ -84,7 +84,7 @@ class ModelTrainer:
             }
 
 
-            model_report:dict=evaluate_model(X_train=X_train,y_train=y_train,X_test=X_test,y_test=y_test,
+            model_report, trained_models = evaluate_model(X_train=X_train,y_train=y_train,X_test=X_test,y_test=y_test,
                                              models=models,param=params)
             
             ## To get the best model score from the dictionary
@@ -94,7 +94,7 @@ class ModelTrainer:
             best_model_name = list(model_report.keys())[
                 list(model_report.values()).index(best_model_score)
             ]
-            best_model = models[best_model_name]
+            best_model = trained_models[best_model_name]
 
             if best_model_score < 0.6:
                 raise CustomException("No best model found")
